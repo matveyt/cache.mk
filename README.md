@@ -22,4 +22,15 @@ Then `make` creates file named .make.cache (or whatever is the value of `file@ca
 variable) in the first run. In subsequent runs the variables are read from cache file and
 no shell command is executed.
 
-If you need to rebuild cache file then pass -B option, e.g., `make -B .make.cache`.
+If you need to rebuild cache file then pass -B option, i.e., `make -B .make.cache`.
+
+Of course, it is not limited to shell calls only. You can use it to store user options as
+well. For example,
+
+```make
+FOO = 1
+unsorted@cache = FOO
+include cache.mk
+```
+
+Then `$ make FOO=0 -B .make.cache` will override FOO permanently.
