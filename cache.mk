@@ -20,6 +20,6 @@ $(file@cache) :
 	$(file  >$@,# This file is auto-generated. DO NOT EDIT.)
 	$(file >>$@,)
 	$(file >>$@,# Unless -B flag specified and no MAKE_RESTARTS)
-	$(file >>$@,ifneq (B,$$(findstring B,$$(MAKEFLAGS))$$(MAKE_RESTARTS)))
+	$(file >>$@,ifneq (B,$$(findstring B,$$(firstword $$(MAKEFLAGS)))$$(MAKE_RESTARTS)))
 	$(foreach v,$(sorted@cache) $(unsorted@cache),$(file >>$@,$v := $($v)))
 	$(file >>$@,endif)
