@@ -3,23 +3,25 @@
 #
 # This is free and unencumbered software released into the public domain.
 
-ifeq (,$(strip $(sorted@cache) $(unsorted@cache)))
-    $(warning Neither sorted@cache nor unsorted@cache was assigned)
+ifeq (,$(strip $(plain@cache) $(sorted@cache) $(unique@cache)))
+    $(warning Neither plain@cache nor sorted@cache nor unique@cache was assigned)
 endif
-ifneq (,$(strip $(foreach v,$(sorted@cache) $(unsorted@cache),\
+ifneq (,$(strip $(foreach v,$(plain@cache) $(sorted@cache) $(unique@cache),\
     $(filter-out recursive,$(flavor $v)))))
-    $(warning All items in sorted@cache and unsorted@cache should be recursive)
+    $(warning All cached variables should be recursive)
 endif
 
+uniq ?= $(strip $(if $1,$(firstword $1) $(call $0,$(filter-out $(firstword $1),$1))))
 file@cache ?= .make.cache
 -include $(file@cache)
-$(foreach v,$(sorted@cache),$(eval $v := $(sort $($v))))
-$(foreach v,$(unsorted@cache),$(eval $v := $($v)))
+$(foreach v,$(plain@cache),$(eval $v := $($v)))
+$(foreach v,$(sorted@cache),$(eval $v := $(call sort,$($v))))
+$(foreach v,$(unique@cache),$(eval $v := $(call uniq,$($v))))
 
 $(file@cache) :
 	$(file  >$@,# This file is auto-generated. DO NOT EDIT.)
 	$(file >>$@,)
 	$(file >>$@,# Unless -B flag specified and no MAKE_RESTARTS)
 	$(file >>$@,ifneq (B,$$(findstring B,$$(firstword $$(MAKEFLAGS)))$$(MAKE_RESTARTS)))
-	$(foreach v,$(sorted@cache) $(unsorted@cache),$(file >>$@,$v := $($v)))
+	$(foreach v,$(plain@cache) $(sorted@cache) $(unique@cache),$(file >>$@,$v := $($v)))
 	$(file >>$@,endif)
