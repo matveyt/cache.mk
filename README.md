@@ -29,7 +29,7 @@ well. For example,
 
 ```make
 FOO = 1
-plain@cache = FOO
+simple@cache = FOO
 include cache.mk
 ```
 
